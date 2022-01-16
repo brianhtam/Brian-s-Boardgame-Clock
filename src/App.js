@@ -28,58 +28,69 @@ function App() {
 }
 
 
-// Define class that creates the timers
-class Timer extends React.Component {
+/**
+ * This is a React Component which displays a multi-player timer.
+ *
+ * The state for this component looks something like:
+ * this.state: {
+ *   players: [
+ *     {
+ *       seconds: 600,
+ *     },
+ *     {
+ *       seconds: 600,
+ *     }
+ *   ]
+ *   currentPlayer: 0,
+ *   numPlayers: 2,
+ *   initialTimer: 600s
+ * }
+ */
+ class Timer extends React.Component {
   constructor() {
     super();
     let defaultNumPlayers = 3;
     let initialSeconds = 600;
     this.state = {
-      numPlayers:defaultNumPlayers,
+      numPlayers: defaultNumPlayers,
       initialSeconds: initialSeconds,
       currentPlayer: 0,
-      // time:{},
-      players: this.makePlayers(defaultNumPlayers, initialSeconds)};
-    this.timer = 0;
-    this.startTimer = this.startTimer.bind(this);
+      players: this.makePlayers(defaultNumPlayers, initialSeconds),
+    };
+    this.timer = null;
+    this.createTimers = this.createTimers.bind(this);
+    this.toggleTimer = this.toggleTimer.bind(this);
     this.countDown = this.countDown.bind(this);
-    this.numerPlayersChange = this.numPlayersChange.bind(this);
+    this.numPlayersChange = this.numPlayersChange.bind(this);
     this.initialTimeChange = this.initialTimeChange.bind(this);
     this.switchPlayer = this.switchPlayer.bind(this);
   }
 
-  // secondsToTime(secs){
-  //   let hours = Math.floor(secs / (60 * 60));
-
-  //   let divisor_for_minutes = secs % (60 * 60);
-  //   let minutes = Math.floor(divisor_for_minutes / 60);
-
-  //   let divisor_for_seconds = divisor_for_minutes % 60;
-  //   let seconds = Math.ceil(divisor_for_seconds);
-
-  //   let obj = {
-  //     "h": hours,
-  //     "m": minutes,
-  //     "s": seconds
-  //   };
-  //   return obj;
-  // }
-
+  /**
+   * Converts an integer number of seconds into a string in the MM:SS format.
+   */
   secondsToTime(secs){
-    let sec_num = secs
-    let minutes = Math.floor(sec_num / 60);
-    let seconds = sec_num - (minutes * 60);
+    let minutes = Math.floor(secs / 60);
+    let seconds = secs - (minutes * 60);
 
     if (seconds < 10) {
-      seconds = '0' + seconds;
+      seconds = "0" + seconds;
     }
+    return `${minutes}:${seconds}`;
+  }
 
-    return minutes + ':' + seconds;}
-
-
+  /**
+   * Based on the number of players and initial time chosen, returns a list of players.
+   *
+   * e.g. numPlayers = 2, initialSeconds = 600 returns a list:
+   *   [
+   *     { seconds: 600 },
+   *     { seconds: 600 }
+   *   ]
+   */
   makePlayers(numPlayers, initialSeconds) {
     let players = [];
-    for (let i=0; i < numPlayers; i++) {
+    for (let i = 0; i < numPlayers; i++) {
       players = players.concat({
         seconds: initialSeconds,
       })
@@ -87,134 +98,115 @@ class Timer extends React.Component {
     return players;
   }
 
-  // componentDidMount() {
-  //   let timeLeftVar = this.secondsToTime(this.state.intialSeconds);
-  //   this.setState({ time: timeLeftVar });
-  // }
+  /**
+   * This is called when the "Create Timers" button is pressed.
+   * Based on the number of players and initial time chosen, creates the
+   * correct number of players and timers.
+   *
+   * This does not start the countdown on the timers.
+   */
+  createTimers() {
+    this.setState({
+      players: this.makePlayers(this.state.numPlayers, this.state.initialSeconds)
+    });
+  }
 
-  // toggleTimer() {
-  //   if (this.timer == 0 && this.state.initialSeconds > 0) {
-  //     this.timer = setInterval(this.countDown, 1000);
-  //   }
-  //   else {
-  //     clearInterval(this.timer);
-  //   }
-  // }
-
-  startTimer() {
-
-    if (this.timer == 0) {
-      // Calling this.countdown every second until you call clearInterval on the same timer
+  /**
+   * This is called when the "Start/Pause/Resume" button is pressed.
+   * Starts counting down on the timers if it is not running (timer = null).
+   * Otherwise, it stops the timer countdown and sets the timer to null.
+   */
+  toggleTimer() {
+    // TODO: prevent timer from being started if any of the players' times is <= 0
+    if (this.timer == null) {
+      // starts calling this.countdown() every second
       this.timer = setInterval(this.countDown, 1000);
-    }
-    else {
+    } else {
+      // stop calling this.countdown() every second
       clearInterval(this.timer);
-      this.timer = 0; // next time you click start button the other branch of the if statement would not trigger without this
+      this.timer = null;
     }
   }
 
+  /**
+   * This is called once per second when the timer is active.
+   */
   countDown() {
-    // Remove one second, set state so a re-render happens.
-    let seconds = this.state.players[this.state.currentPlayer].seconds - 1;
-    this.state.players[this.state.currentPlayer].seconds = seconds;
+    // Remove one second
+    let players = this.state.players
+    let seconds = players[this.state.currentPlayer].seconds - 1;
 
-    // setting the player
+    players[this.state.currentPlayer].seconds = seconds;
+
+    // set state so a re-render happens.
     this.setState({
-      players: this.state.players,
+      players: players,
     });
 
     // Check if we're at zero.
-    if (seconds == 0) {
+    if (seconds === 0) {
       clearInterval(this.timer);
     }
   }
 
+  /**
+   * This is called when the user makes a selection in the "Number of Players" dropdown
+   */
   numPlayersChange(event) {
     this.setState({ numPlayers: parseInt(event.target.value) });
   }
 
+  /**
+   * This is called when the user makes a selection in the "Initial time" dropdown
+   */
   initialTimeChange(event) {
-    this.setState({ initialSeconds: parseInt(event.target.value)*60 });
+    this.setState({ initialSeconds: parseInt(event.target.value) * 60 });
   }
 
+  /**
+   * This is called when the "Next Player" button is called.
+   */
   switchPlayer() {
     let nextPlayer = (this.state.currentPlayer + 1) % this.state.numPlayers;
-    this.setState({ currentPlayer: nextPlayer});
+    this.setState({ currentPlayer: nextPlayer });
   }
 
   render() {
-    return(
+    console.log(this.state);
+    return (
       <div>
-        <div>
-          <select name='num-players' id='num-players' defaultValue="3" onChange={this.numPlayersChange}>
-            <option value='2'>2</option>
-            <option value='3'>3</option>
-            <option value='4'>4</option>
-            <option value='5'>5</option>
-            <option value='6'>6</option>
-          </select>
-        </div>
-        <div>
-          <label for='num-players'>Number of players: {this.state.numPlayers}</label>
-        </div>
-        <div>
-          <label for='num-players'>Time limit (minutes): </label>
-          <select name='num-minutes' id='num-minutes' defaultValue="10" onChange={this.initialTimeChange}>
-            <option value='5'>5</option>
-            <option value='10'>10</option>
-            <option value='15'>15</option>
-            <option value='20'>20</option>
-            <option value='25'>25</option>
-            <option value='25'>30</option>
-          </select>
-        </div>
-        <button onClick={this.startTimer}>Start</button>
-        <button onClick={this.switchPlayer}>Next Player</button>
+        <b>Number of players: </b>
+        <select defaultValue="3" onChange={this.numPlayersChange}>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <br/>
+        <b>Initial timer: </b>
+        <select defaultValue="10" onChange={this.initialTimeChange}>
+          <option value="1">1</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+        <br/>
+        <button onClick={this.createTimers}>Create Timers</button>
+        <br/><br/>
         <div>
           {this.state.players.map((player, i) => {
             return <div key={i}>
-
-              Player {i} Time: {this.secondsToTime(player.seconds)}
-            </div>
-          })
-          }
+                Player {i}: {this.secondsToTime(player.seconds)}
+              </div>
+          })}
         </div>
+        <button onClick={this.toggleTimer}>Start/Pause/Resume</button>
+        <br/>
+        <button onClick={this.switchPlayer}>Next Player</button>
       </div>
     );
   }
 }
 
 export default App;
-
-
-//##########################################################
-
-/*
-OPTION 2
-  {
-    currentPlayer: 3,
-    numPlayers: 4
-    players: [
-      {
-        seconds: 600,
-      }
-    ]*parseInt(this.state.numPlayers)
-  }
-
-  players = []
-  for ( 4 times ) {
-    players.append {
-      seconds: beginningSeconds
-    }
-  }
-
-  this.state.players[currentPlayer].seconds
-
-  this.timer: every second, subtract 1 from the current player's seconds
-
-  we'll also need buttons for incrementing the currentPlayer to the next player
-
-
-*/
-
-//ReactDOM.render(<Example/>, document.getElementById('View'));
