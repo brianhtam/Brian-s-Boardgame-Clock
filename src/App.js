@@ -9,7 +9,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <p>
+          Welcome to Brian's Boardgame Timer!!!
+        </p>
         <img src={logo} className="App-logo" alt="logo" />
+        <Timer />
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -18,10 +22,6 @@ function App() {
         >
           Learn React
         </a>
-        <p>
-          Welcome to Brian's Boardgame Timer!!!
-        </p>
-        <Timer />
       </header>
     </div>
   );
