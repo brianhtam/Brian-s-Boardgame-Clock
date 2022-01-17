@@ -43,11 +43,12 @@
   width: 100%;
   border: none;
   background-color: #ffffff;
-  padding: 50px 28px;
+  padding: 70px 28px;
   font-size: 3em;
   cursor: pointer;
   text-align: center;
   border-radius: 0.5em;
+  margin-top: 20px;
 }
 
 .timer-text {
