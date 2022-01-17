@@ -12,7 +12,6 @@ function App() {
         <p>
           Welcome to Brian's Boardgame Timer!!!
         </p>
-        <img src={logo} className="App-logo" alt="logo" />
         <Timer />
       </header>
     </div>
@@ -186,6 +185,7 @@ function App() {
         <br/>
         <button onClick={this.createTimers}>Create Timers</button>
         <br/><br/>
+        <img src={logo} className="App-logo" alt="logo" />
         <div>
           {this.state.players.map((player, i) => {
             return <div key={i}>
@@ -194,8 +194,8 @@ function App() {
           })}
         </div>
         <button onClick={this.toggleTimer}>Start/Pause/Resume</button>
-        <br/>
-        <button onClick={this.switchPlayer}>Next Player</button>
+        <br/><br/>
+        <button class='block' onClick={this.switchPlayer}>Next Player</button>
       </div>
     );
   }

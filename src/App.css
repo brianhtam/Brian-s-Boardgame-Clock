@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+/* my CSS additions here */
+.block {
+  display: block;
+  width: 100%;
+  border: none;
+  background-color: #ffffff;
+  padding: 50px 28px;
+  font-size: 34px;
+  cursor: pointer;
+  text-align: center;
+}
