@@ -54,3 +54,13 @@
 .timer-text {
   font-size: 2.5em;
 }
+
+.current-player{
+  color: red;
+  font-size: 2.5em;
+}
+
+.other-player{
+  color: white;
+  font-size: 2.5em;
+}

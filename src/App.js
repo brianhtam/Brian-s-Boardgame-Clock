@@ -194,7 +194,7 @@ function App() {
         </div>
         <div>
           {this.state.players.map((player, i) => {
-            return <div class="timer-text" key={i}>
+            return <div class={i=== this.state.currentPlayer ? "current-player" : "other-player"} key={i}>
                 Player {i+1} - {this.secondsToTime(player.seconds)}
               </div>
           })}
