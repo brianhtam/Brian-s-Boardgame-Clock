@@ -186,14 +186,17 @@ function App() {
         <button onClick={this.createTimers}>Create Timers</button>
         <br/><br/>
         <img src={logo} className="App-logo" alt="logo" />
+        <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+        <div>
+          <button onClick={this.toggleTimer}>Start/Pause/Resume</button>
+        </div>
         <div>
           {this.state.players.map((player, i) => {
-            return <div key={i}>
-                Player {i}: {this.secondsToTime(player.seconds)}
+            return <div class="timer-text" key={i}>
+                Player {i+1} - {this.secondsToTime(player.seconds)}
               </div>
           })}
         </div>
-        <button onClick={this.toggleTimer}>Start/Pause/Resume</button>
         <br/><br/>
         <button class='block' onClick={this.switchPlayer}>Next Player</button>
       </div>

@@ -44,7 +44,11 @@
   border: none;
   background-color: #ffffff;
   padding: 50px 28px;
-  font-size: 34px;
+  font-size: 100px;
   cursor: pointer;
   text-align: center;
+}
+
+.timer-text {
+  font-size: 100px;
 }
