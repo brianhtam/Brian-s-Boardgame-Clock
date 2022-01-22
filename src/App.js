@@ -9,9 +9,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Welcome to Brian's Boardgame Timer!!!
-        </p>
         <Timer />
       </header>
     </div>
@@ -47,6 +44,7 @@ function App() {
       initialSeconds: initialSeconds,
       currentPlayer: 0,
       players: this.makePlayers(defaultNumPlayers, initialSeconds),
+      screen: 1
     };
     this.timer = null;
     this.createTimers = this.createTimers.bind(this);
@@ -98,7 +96,8 @@ function App() {
    */
   createTimers() {
     this.setState({
-      players: this.makePlayers(this.state.numPlayers, this.state.initialSeconds)
+      players: this.makePlayers(this.state.numPlayers, this.state.initialSeconds),
+      screen: 2
     });
   }
 
@@ -164,31 +163,41 @@ function App() {
 
   render() {
     console.log(this.state);
-    return (
+    if (this.state.screen === 1) {
+      return (
+        <div>
+          <p>
+          Welcome to Brian's Boardgame Timer!!!
+          </p>
+          <br/><br/>
+          <img src={logo} className="App-logo" alt="logo" />
+          <br/><br/>
+          <b>Number of players: </b>
+          <select defaultValue="3" onChange={this.numPlayersChange}>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+          </select>
+          <br/>
+          <b>Initial timer: </b>
+          <select defaultValue="10" onChange={this.initialTimeChange}>
+            <option value="1">1</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+          <br/>
+          <button onClick={this.createTimers}>Create Timers</button>
+        </div>
+      );
+    }
+    if (this.state.screen === 2) {
+      return (
       <div>
-        <b>Number of players: </b>
-        <select defaultValue="3" onChange={this.numPlayersChange}>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-        </select>
-        <br/>
-        <b>Initial timer: </b>
-        <select defaultValue="10" onChange={this.initialTimeChange}>
-          <option value="1">1</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-        </select>
-        <br/>
-        <button onClick={this.createTimers}>Create Timers</button>
-        <br/><br/>
-        <img src={logo} className="App-logo" alt="logo" />
-        <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
         <div>
           <button onClick={this.toggleTimer}>Start/Pause/Resume</button>
         </div>
@@ -205,5 +214,5 @@ function App() {
     );
   }
 }
-
+}
 export default App;
